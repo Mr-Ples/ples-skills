@@ -1,10 +1,10 @@
 ---
-name: new-project
+name: start-new-project
 description: Scaffold a new project in ~/Projects, optionally set up git + GitHub via gh, open it in a herdr tab with a coding agent, and run setup-matt-pocock-skills there.
 disable-model-invocation: true
 ---
 
-# New Project
+# Start New Project
 
 Scaffold a new project from scratch: ask three questions, create the
 folder, optionally wire up git/GitHub, open it in Herdr with a coding
@@ -19,7 +19,7 @@ agent, and configure it for the engineering skills.
   not available, tell the new agent to install it first:
   `npx skills add mattpocock/skills --skill setup-matt-pocock-skills -g -y`
 
-## Step 1: Ask three questions
+## Step 1: Ask the questions
 
 Ask one question at a time. Lead each with the recommended answer so
 the user can accept it in a word.
@@ -40,7 +40,8 @@ override with a different parent directory if they want.
 > Set up git and push to GitHub? (recommended: **yes**)
 
 - **yes**: `git init`, first commit, `gh repo create` + push (step 2).
-- **no**: plain folder, skip all git/gh work.
+  Follow up with question 1c (visibility) before proceeding.
+- **no**: plain folder, skip all git/gh work and the visibility question.
 
 Before any `gh` command, check auth:
 
@@ -51,7 +52,17 @@ gh auth status
 If auth fails, run `gh auth login` interactively and wait for the user
 to complete it before continuing.
 
-### 1c. Agent? (recommended: kilo)
+### 1c. Repo visibility? (only when git was requested; recommended: private)
+
+> Should the GitHub repo be public or private? (recommended: **private**)
+
+- **private**: `gh repo create <name> --private --source=. --push`
+- **public**: `gh repo create <name> --public --source=. --push`
+
+Record the choice and use the matching flag in step 2. Never assume —
+always ask when git is requested.
+
+### 1d. Agent? (recommended: kilo)
 
 > Which coding agent should open the project? (recommended: **kilo**)
 
@@ -68,18 +79,17 @@ mkdir -p ~/Projects/<name>
 If the folder already exists and is non-empty, stop and ask: use the
 existing folder, pick another name, or cancel. Never overwrite.
 
-When git was requested:
+When git was requested, using the visibility chosen in question 1c:
 
 ```bash
 cd ~/Projects/<name>
 git init
 git add -A
 git commit -m "Initial commit"
-gh repo create <name> --public --source=. --push
+gh repo create <name> --private --source=. --push
+# or: gh repo create <name> --public --source=. --push
 ```
 
-Confirm public vs private with the user before `gh repo create`
-(default: **public**, since this feeds sharable skills — but ask).
 If `gh auth status` fails at this point, run `gh auth login` and wait.
 
 ## Step 3: Open a Herdr tab with the agent
