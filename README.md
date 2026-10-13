@@ -1,17 +1,17 @@
-# Simon Skills
+# Ples Skills
 
 Sharable agent skills. Install with the [Skills CLI](https://skills.sh/):
 
 ```bash
 # Whole collection
-npx skills add Mr-Ples/simon-skills -g
+npx skills add Mr-Ples/ples-skills -g
 
 # One skill
-npx skills add Mr-Ples/simon-skills --skill new-project -g -y
+npx skills add Mr-Ples/ples-skills --skill start-new-project -g -y
 ```
 
 ## Skills
 
 | Skill | What it does |
 | ----- | ------------ |
-| `new-project` | Scaffold a project in `~/Projects`, optionally set up git + GitHub via `gh`, open it in a Herdr tab with a coding agent, and run `setup-matt-pocock-skills` there. Requires Herdr + `gh`. |
+| `start-new-project` | Scaffold a project in `~/Projects`, optionally set up git + GitHub via `gh`, open it in a Herdr tab with a coding agent, and run `setup-matt-pocock-skills` there. Requires Herdr + `gh`. |
