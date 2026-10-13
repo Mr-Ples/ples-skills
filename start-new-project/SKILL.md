@@ -172,14 +172,38 @@ asked to jump straight into the new project.
 
 ## Step 4: Run setup-matt-pocock-skills in the new agent
 
+Send the prompt **without** `--wait` — delivery and completion are
+checked separately below. (`--wait` tracks lifecycle state, not the
+turn you just sent: if the agent was already working, an unrelated
+turn's completion can satisfy it, or the wait can fail even though the
+prompt landed fine. Fire-and-forget + verify is the reliable pattern.)
+
 ```bash
-herdr agent prompt <agent-name> "Run the setup-matt-pocock-skills skill to configure this repo (issue tracker, triage labels, domain docs)." --wait --timeout 120000
+herdr agent prompt <agent-name> "Run the setup-matt-pocock-skills skill to configure this repo (issue tracker, triage labels, domain docs)."
 ```
 
-If the prompt returns `blocked`, inspect with `herdr agent read`
-and ask the user before answering. On success, report back:
+**Verify delivery, then stop.** If the `prompt` command itself returns
+success (exit 0, no `agent_blocked` error), the text was handed to the
+pane — that is the success criterion for this skill. Optionally confirm
+the agent picked it up:
+
+```bash
+herdr agent get <agent-name>
+herdr agent read <agent-name> --source recent-unwrapped --lines 40
+```
+
+- State `working`, or the prompt text visible in the output → delivered.
+  **Stop here and report success.** Do not wait for the new agent to
+  finish its setup work — that runs on its own in its tab.
+- `agent_blocked` on send → inspect with `herdr agent read` and ask
+  the user before answering.
+- Any other send error → report the error text, do not retry in a loop.
+
+On success, report back and tell the user they can close this agent:
 
 - Project path: `~/Projects/<name>`
 - Tab ID and agent name
 - GitHub URL (if created — get it from the `gh repo create` output,
   not by guessing the URL)
+- Say: **"Success — the new agent has the setup prompt and is working
+  in its own tab. You can now close this agent."**
