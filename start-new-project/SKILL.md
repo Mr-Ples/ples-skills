@@ -127,6 +127,30 @@ Only proceed to `agent start` once status shows the kind as installed
 (`current` or a version). If the install fails, stop and tell the user
 to install the agent itself first, then re-run this skill.
 
+**Fallback: manual agent recognition.** Some kinds (notably `cline`)
+are accepted by `herdr agent start --kind` but have no Herdr
+integration entry, so auto-detection never fires and `agent start`
+loops. If `agent start` fails to detect readiness, or the chosen kind
+is one you know has no integration, register the pane manually
+instead of retrying:
+
+```bash
+herdr pane report-agent <pane-id> --source manual --agent <kind> --state idle
+# e.g. herdr pane report-agent w1:p7 --source manual --agent cline --state idle
+```
+
+Then verify it appears:
+
+```bash
+herdr agent list
+```
+
+After manual registration, keep its lifecycle accurate by re-reporting
+state when it changes (`--state working` while it works, `--state idle`
+when done, `--state blocked` when it needs input). Do not use this
+fallback when an integration exists — prefer `herdr agent start` and
+real detection.
+
 Then create the tab:
 
 ```bash
