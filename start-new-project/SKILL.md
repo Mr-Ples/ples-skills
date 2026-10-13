@@ -14,7 +14,13 @@ agent, and configure it for the engineering skills.
 
 - Running inside Herdr: verify with `test "${HERDR_ENV:-}" = 1`.
   If the check fails, stop and tell the user this skill requires Herdr.
-- `gh` CLI for anything git/GitHub related.
+- `gh` CLI installed. **Rule: for every git/GitHub operation, prefer
+  the `gh` command whenever one exists** (`gh repo create`, `gh repo
+  clone`, `gh pr *`, `gh issue *`). Only fall back to bare `git` for
+  local-only operations `gh` cannot do (`git init`, `git add`,
+  `git commit`) — never hand-roll what `gh` already covers (no manual
+  `git remote add` + `git push` when `gh repo create --source=. --push`
+  does it in one step).
 - `setup-matt-pocock-skills` should be installed for step 4. If it is
   not available, tell the new agent to install it first:
   `npx skills add mattpocock/skills --skill setup-matt-pocock-skills -g -y`
@@ -39,7 +45,9 @@ override with a different parent directory if they want.
 
 > Set up git and push to GitHub? (recommended: **yes**)
 
-- **yes**: `git init`, first commit, `gh repo create` + push (step 2).
+- **yes**: `git init` locally (no `gh` equivalent exists for this),
+  first commit, then `gh repo create` + `--push` (step 2). Use `gh` for
+  the remote half — never `git remote add` + `git push` by hand.
   Follow up with question 1c (visibility) before proceeding.
 - **no**: plain folder, skip all git/gh work and the visibility question.
 
@@ -59,8 +67,8 @@ to complete it before continuing.
 - **private**: `gh repo create <name> --private --source=. --push`
 - **public**: `gh repo create <name> --public --source=. --push`
 
-Record the choice and use the matching flag in step 2. Never assume —
-always ask when git is requested.
+Record the choice and use the matching `gh repo create --<flag>` in
+step 2. Never assume — always ask when git is requested.
 
 ### 1d. Agent? (recommended: kilo)
 
@@ -79,7 +87,11 @@ mkdir -p ~/Projects/<name>
 If the folder already exists and is non-empty, stop and ask: use the
 existing folder, pick another name, or cancel. Never overwrite.
 
-When git was requested, using the visibility chosen in question 1c:
+When git was requested, using the visibility chosen in question 1c.
+**Use `gh` for the remote half** — `gh repo create --source=. --push`
+wires up the remote and pushes in one step; do not run `git remote add`
+or `git push` manually. Bare `git` is only for the local-only part
+(`init`/`add`/`commit`), which `gh` cannot do:
 
 ```bash
 cd ~/Projects/<name>
@@ -124,4 +136,5 @@ and ask the user before answering. On success, report back:
 
 - Project path: `~/Projects/<name>`
 - Tab ID and agent name
-- GitHub URL (if created)
+- GitHub URL (if created — get it from the `gh repo create` output,
+  not by guessing the URL)
