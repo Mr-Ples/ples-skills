@@ -10,6 +10,21 @@ npx skills add Mr-Ples/ples-skills -g
 npx skills add Mr-Ples/ples-skills --skill start-new-project -g -y
 ```
 
+## Updating
+
+If you installed via `npx skills add`:
+
+```bash
+# Update just this collection's skills
+npx skills update -g -y
+
+# Or update one skill by name
+npx skills update start-new-project -g -y
+```
+
+This pulls the latest `SKILL.md` from GitHub into your agent directories.
+Check what's installed with `npx skills list -g`.
+
 ## Skills
 
 | Skill | What it does |
