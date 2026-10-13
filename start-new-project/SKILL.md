@@ -108,6 +108,27 @@ If `gh auth status` fails at this point, run `gh auth login` and wait.
 
 Parse IDs from JSON responses — never guess them.
 
+**First: check the Herdr integration for the chosen agent kind.**
+Without it, `herdr agent start` never detects readiness and loops:
+
+```bash
+herdr integration status
+```
+
+If the output shows `<kind>: not installed` (e.g. `codex: not
+installed`), install it before continuing:
+
+```bash
+herdr integration install <kind>
+# e.g. herdr integration install kilo
+```
+
+Only proceed to `agent start` once status shows the kind as installed
+(`current` or a version). If the install fails, stop and tell the user
+to install the agent itself first, then re-run this skill.
+
+Then create the tab:
+
 ```bash
 herdr tab create --cwd ~/Projects/<name> --label <name> --no-focus
 ```
