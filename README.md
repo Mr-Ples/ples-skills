@@ -4,10 +4,10 @@ Sharable agent skills. Install with the [Skills CLI](https://skills.sh/):
 
 ```bash
 # Whole collection
-npx skills add <you>/simon-skills -g
+npx skills add Mr-Ples/simon-skills -g
 
 # One skill
-npx skills add <you>/simon-skills --skill new-project -g -y
+npx skills add Mr-Ples/simon-skills --skill new-project -g -y
 ```
 
 ## Skills
